@@ -192,3 +192,12 @@
     language: python
     types: [text]
     stages: [commit, push, manual]
+-   id: branch-name-test
+    name: tests whether branch name matches given regex
+    description: tests whether branch name matches given regex
+    entry: branch-name-test
+    language: python
+    always_run: true
+    # this config does not enforce any branch naming scheme on this repo
+    args: ["--branch-regex", "(master|main|staging)|(.*)" ]
+    stages: [commit, push, manual]
