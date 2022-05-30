@@ -6,12 +6,14 @@ import pathlib
 import re
 from subprocess import PIPE
 from subprocess import Popen
-from typing import Sequence, Optional
+from typing import Sequence
 
 logging.basicConfig(
     level=logging.WARNING, filemode='w',
     filename='branch_name_test.log',
 )
+DEFAULT_REGEX = r'^(master|main|staging)$|' \
+                r'^((feat|docs|chore|debug|test)\/\d+\/[\w_\d-]+)$'
 
 
 def get_branch_name_from_path(path: str = '.') -> str | None:
@@ -49,7 +51,8 @@ def get_branch_name_from_path(path: str = '.') -> str | None:
 
 def check_branches(
         branch_regex: re.Pattern[str],
-        branch_names: list[Optional[str]]) -> int:
+        branch_names: list[str | None],
+) -> int:
     """
     check if the given branch names match the given regex
     Args:
@@ -97,13 +100,9 @@ def main(argv: Sequence[str] | None = None) -> int:
 
     parser = argparse.ArgumentParser()
 
-    default_regex = r'^(master|main|staging)$|' \
-                    r'^((feat|docs|chore|debug|test)\/\d+\/[\w_\d-]+)$'
-    logging.debug(f'default_regex: {default_regex}')
-
     parser.add_argument(
         '--branch-regex', nargs='?',
-        default=default_regex,
+        default=DEFAULT_REGEX,
         help='regex to use to match branch name',
     )
     parser.add_argument(
