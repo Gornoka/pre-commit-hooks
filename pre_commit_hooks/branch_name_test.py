@@ -12,15 +12,25 @@ logging.basicConfig(
     level=logging.WARNING, filemode='w',
     filename='branch_name_test.log',
 )
-DEFAULT_REGEX = r'^(master|main|staging)$|' \
-                r'^((feat|docs|chore|debug|test)\/\d+\/[\w_\d-]+)$'
+DEFAULT_REGEX = '^(master|main|staging)$|' \
+                '^((feat|docs|chore|debug|test)\\/' \
+                '(\\d+|quick)\\/[\\w\\d\\-\\_]+)$'
+# validates against the branches
+# master main staging
+# and feature brances following the style
+# type/number/name
+# where type is one of feat, docs, chore, debug, test
 
 
-def get_branch_name_from_path(path: str = '.') -> str | None:
+def get_branch_name_from_path(
+    path: str = '.',
+    verbose: bool = True,
+) -> str | None:
     """
     get the branch name for a given file or folder pathlike object or str
     Returns None in case of an error
     Args:
+        verbose (): whether to print error to stdout mainly for testing
         path (): path of target file or folder
 
     Returns: str or None
@@ -41,7 +51,8 @@ def get_branch_name_from_path(path: str = '.') -> str | None:
     p.wait(1)
     stdout, stderr = p.communicate()
     if stderr is not None:
-        print(f"unable to get branch name with {stderr.decode('utf-8')}")
+        if verbose:
+            print(f"unable to get branch name with {stderr.decode('utf-8')}")
         logging.error('failed to get branch name with %s', stderr)
         return None
     # remove trailing \n from branch name
@@ -52,6 +63,7 @@ def get_branch_name_from_path(path: str = '.') -> str | None:
 def check_branches(
         branch_regex: re.Pattern[str],
         branch_names: list[str | None],
+        verbose: bool = True,
 ) -> int:
     """
     check if the given branch names match the given regex
@@ -71,11 +83,16 @@ def check_branches(
                 'failed to get branch name for one of  %s',
                 branch_names,
             )
-            print('failed to get branch name for a file see logs for details')
+            if verbose:
+                print(
+                    'failed to get branch name for a file '
+                    'see logs for details',
+                )
             return 1
 
         if not branch_regex.search(bn):
-            print(f'branch name {bn} does not match regex {branch_names}')
+            if verbose:
+                print(f'branch name {bn} does not match regex {branch_names}')
             logging.error(
                 'branch name %s does not '
                 'match regex %s', bn, branch_names,
