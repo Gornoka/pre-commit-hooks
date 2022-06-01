@@ -196,6 +196,16 @@ Trims trailing whitespace.
   - By default, this hook trims all whitespace from the ends of lines.
     To specify a custom set of characters to trim instead, use `args: [--chars,"<chars to trim>"]`.
 
+#### `branch-name-test`
+tests whether branch name matches given regex
+    behaviour can be changed with the args:
+    - "--branch-regex"  <validation regex>
+      specifies which regex is considered valid
+
+    - "--fast-mode" true/false
+      if true only chcks for first file given to hook, else for all of them
+
+
 ### Deprecated / replaced hooks
 
 - `check-byte-order-marker`: instead use fix-byte-order-marker
