@@ -9,8 +9,7 @@ from subprocess import Popen
 from typing import Sequence
 
 logging.basicConfig(
-    level=logging.WARNING, filemode='w',
-    filename='branch_name_test.log',
+    level=logging.WARNING
 )
 DEFAULT_REGEX = '^(master|main|staging)$|' \
                 '^((feat|docs|chore|debug|test)\\/' \
